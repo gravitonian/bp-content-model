@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.alfresco.org/model/dictionary/1.0"
+       name="bookpub:book_publishing">
+    <description>This custom content model defines new types and aspects related to the publishing domain.</description>
+    <author>Martin Bergljung</author>
+    <version>1.0</version>
+
+    <imports>
+        <!-- Import Alfresco Content Domain Model Definitions -->
+        <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <!-- Import Alfresco Dictionary Definitions -->
+        <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+    </imports>
+
+    <namespaces>
+        <namespace uri="http://www.marversolutions.org/model/content/publishing/1.0" prefix="bookpub"/>
+    </namespaces>
+
+    <constraints>
+        <constraint name="bookpub:isbnFormat" type="REGEX">
+            <parameter name="expression">
+                <value><![CDATA[^(97(8|9))\d{9}(\d|X)$]]></value>
+            </parameter>
+            <parameter name="requiresMatch">
+                <value>true</value>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:bookMetadataStatusOptions" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value></value> <!-- Empty for default search-->
+                    <value>Missing</value> <!-- None of the chapter folders have metadata -->
+                    <value>Partial</value> <!-- Some of the chapter folders have metadata -->
+                    <value>Completed</value> <!-- All of the chapter folders have metadata -->
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:chapterMetadataStatusOptions" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value></value> <!-- Empty for default search-->
+                    <value>Missing</value>
+                    <value>Completed</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:ingestionStatusOptions" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>In Progress</value>
+                    <value>Complete</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:productionStatusOptions" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>In Progress</value>
+                    <value>Completed</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:bookGenreOptions" type="LIST">
+            <parameter name="allowedValues">
+                <list>
+                    <value>Non-fiction</value>
+                    <value>Comedy</value>
+                    <value>Drama</value>
+                    <value>Fantasy</value>
+                    <value>Fiction</value>
+                    <value>Horror</value>
+                    <value>Mythology</value>
+                    <value>Mystery</value>
+                    <value>Romance</value>
+                    <value>Satire</value>
+                    <value>Tragedy</value>
+                    <value>Tragicomedy</value>
+                </list>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:bookPagesOptions" type="MINMAX">
+            <parameter name="minValue">
+                <value>10</value>
+            </parameter>
+            <parameter name="maxValue">
+                <value>2000</value>
+            </parameter>
+        </constraint>
+        <constraint name="bookpub:chapterNumberOptions" type="MINMAX">
+            <parameter name="minValue">
+                <value>1.0</value>
+            </parameter>
+            <parameter name="maxValue">
+                <value>200.0</value>
+            </parameter>
+        </constraint>
+    </constraints>
+
+    <types>
+        <type name="bookpub:bookFolder">
+            <title>Book Folder (ISBN)</title>
+            <description>Folder that contains all media related to a book, named by ISBN</description>
+            <parent>cm:folder</parent>
+            <properties>
+                <property name="bookpub:bookIngestionStatus">
+                    <title>Book Ingestion Status</title>
+                    <description>Indicates whether the ingestion of this book into
+                        Alfresco has been completed</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <constraints>
+                        <constraint ref="bookpub:ingestionStatusOptions" />
+                    </constraints>
+                </property>
+                <property name="bookpub:bookProductionStatus">
+                    <title>Book Production Status</title>
+                    <description>Indicates weather this book is completed or in progress.</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <default>In Progress</default>
+                    <index enabled="true">
+                        <tokenised>false</tokenised>
+                        <facetable>true</facetable>
+                    </index>
+                    <constraints>
+                        <constraint ref="bookpub:productionStatusOptions" />
+                    </constraints>
+                </property>
+            </properties>
+            <mandatory-aspects>
+                <aspect>bookpub:bookInfo</aspect>
+                <aspect>bookpub:webPublishingInfo</aspect>
+            </mandatory-aspects>
+        </type>
+
+        <type name="bookpub:chapterFolder">
+            <title>Chapter Folder</title>
+            <description>Contains all media related to one chapter of a book</description>
+            <parent>cm:folder</parent>
+            <mandatory-aspects>
+                <aspect>bookpub:bookInfo</aspect>
+                <aspect>bookpub:chapterInfo</aspect>
+            </mandatory-aspects>
+        </type>
+
+        <type name="bookpub:mediaFile">
+            <title>Media File</title>
+            <description>A generic base type for book related files, such as a chapter, artwork, or the complete book.</description>
+            <parent>cm:content</parent>
+            <mandatory-aspects>
+                <aspect>bookpub:bookInfo</aspect>
+            </mandatory-aspects>
+        </type>
+
+        <type name="bookpub:chapterFile">
+            <title>Chapter File</title>
+            <description>A file with this type contains a chapter of a book.</description>
+            <parent>bookpub:mediaFile</parent>
+            <mandatory-aspects>
+                <aspect>bookpub:chapterInfo</aspect>
+            </mandatory-aspects>
+        </type>
+
+        <type name="bookpub:artworkFile">
+            <title>Artwork File</title>
+            <description>A file with this type contains artwork for a chapter, such as a diagram.</description>
+            <parent>bookpub:mediaFile</parent>
+        </type>
+
+        <type name="bookpub:supplementaryFile">
+            <title>Supplementary File</title>
+            <description>A file with this type is a supplementary file to a book, such as the index.</description>
+            <parent>bookpub:mediaFile</parent>
+        </type>
+
+        <type name="bookpub:bookFile">
+            <title>Book File</title>
+            <description>A file with this type contains a complete book. Such as an .epub or .pdf</description>
+            <parent>bookpub:mediaFile</parent>
+        </type>
+    </types>
+
+    <aspects>
+        <aspect name="bookpub:bookInfo">
+            <title>Book Info</title>
+            <description>Contains the main metadata/properties for a book, such as ISBN.</description>
+            <properties>
+                <property name="bookpub:bookAuthors">
+                    <title>Authors</title>
+                    <description>The authors of this book</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <multiple>true</multiple>
+                </property>
+                <property name="bookpub:nrOfChapters">
+                    <title>Number of Chapters</title>
+                    <description>The total number of chapters that the book has</description>
+                    <type>d:int</type>
+                    <mandatory>false</mandatory>
+                    <constraints>
+                        <constraint ref="bookpub:chapterNumberOptions" />
+                    </constraints>
+                </property>
+                <property name="bookpub:ISBN">
+                    <title>ISBN</title>
+                    <description>The main ISBN-13 number for the book</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <constraints>
+                        <constraint ref="bookpub:isbnFormat" />
+                    </constraints>
+                </property>
+                <property name="bookpub:nrOfPages">
+                    <title>Number of Pages</title>
+                    <description>The total number of pages this book has.</description>
+                    <type>d:int</type>
+                    <mandatory>false</mandatory>
+                    <constraints>
+                        <constraint ref="bookpub:bookPagesOptions"/>
+                    </constraints>
+                </property>
+                <property name="bookpub:bookGenre">
+                    <title>Book Subject Name</title>
+                    <description>The genre this book belongs to</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                    <index enabled="true">
+                        <tokenised>false</tokenised>
+                        <facetable>true</facetable>
+                    </index>
+                    <constraints>
+                        <constraint ref="bookpub:bookGenreOptions" />
+                    </constraints>
+                </property>
+                <property name="bookpub:bookTitle">
+                    <title>Book Title</title>
+                    <description>The title of the book</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="bookpub:bookMetadataStatus">
+                    <title>Metadata status</title>
+                    <description>Metadata status for the whole book</description>
+                    <type>d:text</type>
+                    <constraints>
+                        <constraint ref="bookpub:bookMetadataStatusOptions" />
+                    </constraints>
+                </property>
+            </properties>
+        </aspect>
+
+        <aspect name="bookpub:chapterInfo">
+            <title>Chapter Info</title>
+            <description>Metadata/properties for a specific chapter of the book</description>
+            <properties>
+                <property name="bookpub:chapterNumber">
+                    <title>Chapter Number</title>
+                    <description>The chapter number/order in the book</description>
+                    <type>d:int</type>
+                    <mandatory>true</mandatory>
+                    <constraints>
+                        <constraint ref="bookpub:chapterNumberOptions" />
+                    </constraints>
+                </property>
+                <property name="bookpub:chapterAuthor">
+                    <title>Author</title>
+                    <description>The author of this chapter</description>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="bookpub:chapterTitle">
+                    <title>Chapter Title</title>
+                    <description>The title of the book chapter</description>
+                    <type>d:text</type>
+                    <mandatory>true</mandatory>
+                </property>
+                <property name="bookpub:chapterMetadataStatus">
+                    <title>Chapter Metadata status</title>
+                    <description>Metadata status for a specific chapter</description>
+                    <type>d:text</type>
+                    <constraints>
+                        <constraint ref="bookpub:chapterMetadataStatusOptions" />
+                    </constraints>
+                </property>
+            </properties>
+        </aspect>
+
+        <aspect name="bookpub:webPublishingInfo">
+            <title>Website Publishing Info</title>
+            <description>Information about when the book was published on the website</description>
+            <properties>
+                <property name="bookpub:webPublishedDate">
+                    <title>Web Published Date</title>
+                    <description>The date the book was first published on the web electronically</description>
+                    <type>d:datetime</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="bookpub:webPublishedVersion">
+                    <title>Web Published Version</title>
+                    <description>Last published version to the web</description>
+                    <type>d:text</type>
+                    <mandatory>false</mandatory>
+                </property>
+                <property name="bookpub:webServerDeliveryOK">
+                    <title>Web Server Delivery OK?</title>
+                    <description>Delivery to the web server was successful if true</description>
+                    <type>d:boolean</type>
+                </property>
+            </properties>
+        </aspect>
+
+    </aspects>
+</model>
