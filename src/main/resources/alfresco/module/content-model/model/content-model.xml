@@ -38,7 +38,6 @@
         <constraint name="bookpub:chapterMetadataStatusOptions" type="LIST">
             <parameter name="allowedValues">
                 <list>
-                    <value></value> <!-- Empty for default search-->
                     <value>Missing</value>
                     <value>Completed</value>
                 </list>
@@ -52,17 +51,10 @@
                 </list>
             </parameter>
         </constraint>
-        <constraint name="bookpub:productionStatusOptions" type="LIST">
-            <parameter name="allowedValues">
-                <list>
-                    <value>In Progress</value>
-                    <value>Completed</value>
-                </list>
-            </parameter>
-        </constraint>
         <constraint name="bookpub:bookGenreOptions" type="LIST">
             <parameter name="allowedValues">
                 <list>
+                    <value></value> <!-- Empty for default search-->
                     <value>Non-fiction</value>
                     <value>Comedy</value>
                     <value>Drama</value>
@@ -110,20 +102,6 @@
                     <mandatory>true</mandatory>
                     <constraints>
                         <constraint ref="bookpub:ingestionStatusOptions" />
-                    </constraints>
-                </property>
-                <property name="bookpub:bookProductionStatus">
-                    <title>Book Production Status</title>
-                    <description>Indicates weather this book is completed or in progress.</description>
-                    <type>d:text</type>
-                    <mandatory>true</mandatory>
-                    <default>In Progress</default>
-                    <index enabled="true">
-                        <tokenised>false</tokenised>
-                        <facetable>true</facetable>
-                    </index>
-                    <constraints>
-                        <constraint ref="bookpub:productionStatusOptions" />
                     </constraints>
                 </property>
             </properties>
@@ -278,6 +256,7 @@
                     <title>Chapter Metadata status</title>
                     <description>Metadata status for a specific chapter</description>
                     <type>d:text</type>
+                    <default>Missing</default>
                     <constraints>
                         <constraint ref="bookpub:chapterMetadataStatusOptions" />
                     </constraints>
@@ -305,6 +284,7 @@
                     <title>Web Server Delivery OK?</title>
                     <description>Delivery to the web server was successful if true</description>
                     <type>d:boolean</type>
+                    <default>false</default>
                 </property>
             </properties>
         </aspect>
