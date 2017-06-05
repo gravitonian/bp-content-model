@@ -88,7 +88,7 @@
                 <groupId>org.alfresco.maven.plugin</groupId>
                 <artifactId>alfresco-maven-plugin</artifactId>
                 <version>${alfresco.sdk.version}</version>
-               
+
                 <configuration>
                     <!-- We need the flat file H2 database to run the Repo -->
                     <enableH2>true</enableH2>

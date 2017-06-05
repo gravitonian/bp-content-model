@@ -13,7 +13,7 @@
     </imports>
 
     <namespaces>
-        <namespace uri="http://www.marversolutions.org/model/content/publishing/1.0" prefix="bookpub"/>
+        <namespace uri="http://www.acme.org/model/content/publishing/1.0" prefix="bookpub"/>
     </namespaces>
 
     <constraints>
