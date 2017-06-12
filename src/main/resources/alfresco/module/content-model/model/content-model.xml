@@ -224,6 +224,12 @@
                         <constraint ref="bookpub:bookMetadataStatusOptions" />
                     </constraints>
                 </property>
+                <property name="bookpub:bookProcessingComplete">
+                    <title>Book processing complete?</title>
+                    <description>Has the processing of book content and metadata (workflow) completed successfully?</description>
+                    <type>d:boolean</type>
+                    <default>false</default>
+                </property>
             </properties>
         </aspect>
 
