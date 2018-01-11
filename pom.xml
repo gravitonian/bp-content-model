@@ -48,7 +48,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- The main Alfresco Repo dependency for compiling Java code in src/main/java -->
+        <!-- The main Alfresco Repo dependency for compiling Java code in src/main/java UPDATE 1 -->
         <dependency>
             <groupId>${alfresco.groupId}</groupId>
             <artifactId>alfresco-repository</artifactId>
